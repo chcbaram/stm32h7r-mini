@@ -29,10 +29,16 @@
 #define      HW_CLI_LINE_HIS_MAX    8
 #define      HW_CLI_LINE_BUF_MAX    64
 
+#define _USE_HW_LOG
+#define      HW_LOG_CH              _DEF_UART1
+#define      HW_LOG_BOOT_BUF_MAX    (4 * 1024)
+#define      HW_LOG_LIST_BUF_MAX    (8 * 1024)
+
 
 //-- CLI
 //
 #define _USE_CLI_HW_UART            1
+#define _USE_CLI_HW_LOG             1
 
 
 typedef enum
