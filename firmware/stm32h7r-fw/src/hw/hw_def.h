@@ -33,12 +33,17 @@
 #define      HW_LOG_BOOT_BUF_MAX    (4 * 1024)
 #define      HW_LOG_LIST_BUF_MAX    (8 * 1024)
 
+#define _USE_HW_RTC
+#define      HW_RTC_BOOT_MODE       RTC_BKP_DR3
+#define      HW_RTC_RESET_BITS      RTC_BKP_DR4
+
 
 //-- CLI
 //
 #define _USE_CLI_HW_UART            1
 #define _USE_CLI_HW_LOG             1
 #define _USE_CLI_HW_ASSERT          1
+#define _USE_CLI_HW_RTC             1
 
 
 typedef enum

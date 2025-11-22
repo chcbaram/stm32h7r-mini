@@ -36,5 +36,7 @@ bool hwInit(void)
 
   logPrintf("\n");
 
+  rtcInit();
+
   return true;
 }
