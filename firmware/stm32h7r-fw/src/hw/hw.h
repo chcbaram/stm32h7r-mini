@@ -17,6 +17,7 @@ extern "C" {
 #include "reset.h"
 #include "rtc.h"
 #include "qbuffer.h"
+#include "qspi.h"
 
 
 bool hwInit(void);

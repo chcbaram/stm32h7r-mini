@@ -40,6 +40,9 @@
 #define _USE_HW_RESET
 #define      HW_RESET_BOOT          1
 
+#define _USE_HW_QSPI
+#define      HW_QSPI_BASE_ADDR      0x90000000
+
 
 //-- CLI
 //
@@ -48,6 +51,7 @@
 #define _USE_CLI_HW_ASSERT          1
 #define _USE_CLI_HW_RTC             1
 #define _USE_CLI_HW_RESET           1
+#define _USE_CLI_HW_QSPI            1
 
 
 typedef enum

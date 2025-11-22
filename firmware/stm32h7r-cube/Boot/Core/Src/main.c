@@ -21,6 +21,7 @@
 #include "gpdma.h"
 #include "rtc.h"
 #include "usart.h"
+#include "xspi.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -96,6 +97,7 @@ int main(void)
   MX_GPDMA1_Init();
   MX_USART1_UART_Init();
   MX_RTC_Init();
+  MX_XSPI1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
