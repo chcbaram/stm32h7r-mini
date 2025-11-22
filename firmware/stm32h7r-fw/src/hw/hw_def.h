@@ -4,7 +4,6 @@
 
 
 #include "bsp.h"
-#include "assert_def.h"
 
 
 #define _DEF_FIRMWATRE_VERSION    "V251122R1"
@@ -39,6 +38,7 @@
 //
 #define _USE_CLI_HW_UART            1
 #define _USE_CLI_HW_LOG             1
+#define _USE_CLI_HW_ASSERT          1
 
 
 typedef enum

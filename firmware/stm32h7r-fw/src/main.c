@@ -50,6 +50,9 @@ int main(void)
   apInit();
   apMain();
 
+
+  assert(0);
+  
   return 0;
 }
 #endif

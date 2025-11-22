@@ -7,7 +7,7 @@ extern "C" {
 
 #include "def.h"
 #include "stm32h7rsxx_hal.h"
-
+#include <assert.h>
 
 void logPrintf(const char *fmt, ...);
 
