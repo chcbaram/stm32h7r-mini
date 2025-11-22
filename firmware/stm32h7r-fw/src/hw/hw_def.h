@@ -37,6 +37,9 @@
 #define      HW_RTC_BOOT_MODE       RTC_BKP_DR3
 #define      HW_RTC_RESET_BITS      RTC_BKP_DR4
 
+#define _USE_HW_RESET
+#define      HW_RESET_BOOT          1
+
 
 //-- CLI
 //
@@ -44,6 +47,7 @@
 #define _USE_CLI_HW_LOG             1
 #define _USE_CLI_HW_ASSERT          1
 #define _USE_CLI_HW_RTC             1
+#define _USE_CLI_HW_RESET           1
 
 
 typedef enum
