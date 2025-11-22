@@ -4,14 +4,26 @@
 #ifdef _USE_HW_UART
 #include "qbuffer.h"
 #include "cli.h"
-#if HW_USE_CDC == 1
-#include "cdc.h"
-#endif
 
 
+#define NAME_DEF(x)               x, #x
 #define UART_RX_BUF_LENGTH        1024
 
 
+typedef enum
+{
+  UART_TYPE_HW,
+  UART_TYPE_CDC,
+} UartType_t;
+
+typedef struct
+{
+  UartType_t          type;
+  USART_TypeDef      *p_uart;
+  UART_HandleTypeDef *p_huart;
+  UartPinName_t       pin_name;
+  const char         *p_name;
+} uart_hw_t;
 
 typedef struct
 {
@@ -25,15 +37,10 @@ typedef struct
 
   uint32_t rx_cnt;
   uint32_t tx_cnt;
+
+  const uart_hw_t *p_hw;
 } uart_tbl_t;
 
-typedef struct
-{
-  const char         *p_msg;
-  USART_TypeDef      *p_uart;
-  UART_HandleTypeDef *p_huart;
-  bool                is_rs485;
-} uart_hw_t;
 
 
 
@@ -52,14 +59,10 @@ static DMA_NodeTypeDef Node_GPDMA1_Channel0;
 static DMA_QListTypeDef List_GPDMA1_Channel0;
 static DMA_HandleTypeDef handle_GPDMA1_Channel0;
 
-const static uart_hw_t uart_hw_tbl[UART_MAX_CH] = 
-  {
-    {"USART1 SWD   ", USART1, &huart1, false},
-    #if HW_UART_MAX_CH >= 2
-    {"USB CD       ", NULL,   NULL   , false},
-    #endif
-  };
-
+const static uart_hw_t uart_hw_tbl[UART_MAX_CH] =
+{
+  {UART_TYPE_HW, USART1, &huart1, NAME_DEF(UART_PIN_USART1)},
+};
 
 
 
@@ -72,6 +75,7 @@ bool uartInit(void)
     uart_tbl[i].baud = 57600;
     uart_tbl[i].rx_cnt = 0;
     uart_tbl[i].tx_cnt = 0;    
+    uart_tbl[i].p_hw = &uart_hw_tbl[i];    
   }
 
   is_init = true;
@@ -106,9 +110,9 @@ bool uartOpen(uint8_t ch, uint32_t baud)
   }
 
 
-  switch(ch)
+  switch(uart_tbl[ch].p_hw->type)
   {
-    case _DEF_UART1:
+    case UART_TYPE_HW:
       uart_tbl[ch].baud      = baud;
 
       uart_tbl[ch].p_huart   = uart_hw_tbl[ch].p_huart;
@@ -123,8 +127,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       uart_tbl[ch].p_huart->Init.OverSampling   = UART_OVERSAMPLING_16;
       uart_tbl[ch].p_huart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
       uart_tbl[ch].p_huart->Init.ClockPrescaler = UART_PRESCALER_DIV1;
-      uart_tbl[ch].p_huart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_SWAP_INIT;
-      uart_tbl[ch].p_huart->AdvancedInit.Swap           = UART_ADVFEATURE_SWAP_ENABLE;
+      uart_tbl[ch].p_huart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
 
       qbufferCreate(&uart_tbl[ch].qbuffer, &uart_tbl[ch].rx_buf[0], UART_RX_BUF_LENGTH);
@@ -133,15 +136,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       __HAL_RCC_GPDMA1_CLK_ENABLE();
 
       HAL_UART_DeInit(uart_tbl[ch].p_huart);
-
-      if (uart_hw_tbl[ch].is_rs485 == true)
-      {
-        ret_hal = HAL_RS485Ex_Init(uart_tbl[ch].p_huart, UART_DE_POLARITY_HIGH, 0, 0);
-      }
-      else
-      {
-        ret_hal = HAL_UART_Init(uart_tbl[ch].p_huart);
-      }
+      ret_hal = HAL_UART_Init(uart_tbl[ch].p_huart);
 
       if (ret_hal == HAL_OK)
       {
@@ -158,11 +153,8 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       }
       break;
 
-    case _DEF_UART2:
-      uart_tbl[ch].baud    = baud;
-      uart_tbl[ch].is_open = true;
-      ret = true;
-      break;      
+    default:
+      break;
   }
 
   return ret;
@@ -182,17 +174,14 @@ uint32_t uartAvailable(uint8_t ch)
   uint32_t ret = 0;
 
 
-  switch(ch)
+  switch(uart_tbl[ch].p_hw->type)
   {
-    case _DEF_UART1:
+    case UART_TYPE_HW:
       uart_tbl[ch].qbuffer.in = (uart_tbl[ch].qbuffer.len - uart_tbl[ch].p_huart->hdmarx->Instance->CBR1);
       ret = qbufferAvailable(&uart_tbl[ch].qbuffer);      
       break;
 
-    case _DEF_UART2:
-      #if HW_USE_CDC == 1
-      ret = cdcAvailable();
-      #endif
+    default:
       break;      
   }
 
@@ -222,16 +211,13 @@ uint8_t uartRead(uint8_t ch)
   uint8_t ret = 0;
 
 
-  switch(ch)
+  switch(uart_tbl[ch].p_hw->type)
   {
-    case _DEF_UART1:
+    case UART_TYPE_HW:
       qbufferRead(&uart_tbl[ch].qbuffer, &ret, 1);
       break;
 
-    case _DEF_UART2:
-      #if HW_USE_CDC == 1
-      ret = cdcRead();
-      #endif
+    default:
       break;      
   }
   uart_tbl[ch].rx_cnt++;
@@ -244,19 +230,16 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data, uint32_t length)
   uint32_t ret = 0;
 
 
-  switch(ch)
+  switch(uart_tbl[ch].p_hw->type)
   {
-    case _DEF_UART1:
+    case UART_TYPE_HW:
       if (HAL_UART_Transmit(uart_tbl[ch].p_huart, p_data, length, 100) == HAL_OK)
       {
         ret = length;
       }
       break;
 
-    case _DEF_UART2:
-      #if HW_USE_CDC == 1
-      ret = cdcWrite(p_data, length);
-      #endif
+    default:
       break;      
   }
   uart_tbl[ch].tx_cnt += ret;
@@ -287,17 +270,18 @@ uint32_t uartGetBaud(uint8_t ch)
   uint32_t ret = 0;
 
 
-  if (ch >= UART_MAX_CH) return 0;
+  if (ch >= UART_MAX_CH) 
+    return 0;
 
-  #if HW_USE_CDC == 1
-  if (ch == HW_UART_CH_USB)
-    ret = cdcGetBaud();
-  else
-    ret = uart_tbl[ch].baud;
-  #else
-  ret = uart_tbl[ch].baud;
-  #endif
-  
+  switch(uart_tbl[ch].p_hw->type)
+  {
+    case UART_TYPE_HW:
+      ret = uart_tbl[ch].baud;
+      break;
+
+    default:
+      break;      
+  }  
   return ret;
 }
 
@@ -319,15 +303,15 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   DMA_NodeConfTypeDef NodeConfig= {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   if(uartHandle->Instance==USART1)
   {
   /** Initializes the peripherals clock
   */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART1;
-    PeriphClkInitStruct.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+    PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
     {
       Error_Handler();
     }
@@ -335,17 +319,17 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     /* USART1 clock enable */
     __HAL_RCC_USART1_CLK_ENABLE();
 
-    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
     /**USART1 GPIO Configuration
-    PB14     ------> USART1_TX
-    PB15     ------> USART1_RX
+    PA9     ------> USART1_TX
+    PA10     ------> USART1_RX
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_14|GPIO_PIN_15;
+    GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF4_USART1;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 
     /* USART1 DMA Init */
@@ -414,10 +398,10 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     __HAL_RCC_USART1_CLK_DISABLE();
 
     /**USART1 GPIO Configuration
-    PB14     ------> USART1_TX
-    PB15     ------> USART1_RX
+    PA9     ------> USART1_TX
+    PA10     ------> USART1_RX
     */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_14|GPIO_PIN_15);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
 
     /* USART1 DMA DeInit */
     HAL_DMA_DeInit(uartHandle->hdmarx);
@@ -434,7 +418,7 @@ void cliUart(cli_args_t *args)
   {
     for (int i=0; i<UART_MAX_CH; i++)
     {
-      cliPrintf("_DEF_UART%d : %s, %d bps\n", i+1, uart_hw_tbl[i].p_msg, uartGetBaud(i));
+      cliPrintf("_DEF_UART%d : %s, %d bps\n", i+1, uart_hw_tbl[i].p_name, uartGetBaud(i));
     }
     ret = true;
   }
