@@ -13,6 +13,8 @@ volatile const firm_ver_t firm_ver __attribute__((section(".version"))) =
 };
 
 
+__attribute__((section(".non_cache")))
+  uint8_t buf[8];
 
 bool hwInit(void)
 {  
@@ -38,7 +40,14 @@ bool hwInit(void)
 
   rtcInit();
   resetInit();
+  faultInit();
+  gpioInit();
+  spiInit();
+  spiFlashInit();
   qspiInit();
+
+
+
 
   return true;
 }

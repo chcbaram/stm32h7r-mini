@@ -11,7 +11,7 @@
 
 
 #define _USE_HW_ASSERT
-
+#define _USE_HW_FAULT
 
 
 #define _USE_HW_LED
@@ -43,6 +43,15 @@
 #define _USE_HW_QSPI
 #define      HW_QSPI_BASE_ADDR      0x90000000
 
+#define _USE_HW_GPIO
+#define      HW_GPIO_MAX_CH         GPIO_PIN_MAX
+
+#define _USE_HW_SPI
+#define      HW_SPI_MAX_CH          SPI_PIN_MAX
+
+#define _USE_HW_SPI_FLASH
+#define      HW_SPI_FLASH_ADDR      0x91000000
+
 
 //-- CLI
 //
@@ -52,11 +61,24 @@
 #define _USE_CLI_HW_RTC             1
 #define _USE_CLI_HW_RESET           1
 #define _USE_CLI_HW_QSPI            1
-
+#define _USE_CLI_HW_GPIO            1
+#define _USE_CLI_HW_SPI_FLASH       1
 
 typedef enum
 {
   UART_PIN_USART1,
 } UartPinName_t;
+
+typedef enum
+{
+  FLASH_SPI_CS,
+  GPIO_PIN_MAX
+} GpioPinName_t;
+
+typedef enum
+{
+  SPI_CH_FLASH,
+  SPI_PIN_MAX,
+} SpiPinName_t;
 
 #endif

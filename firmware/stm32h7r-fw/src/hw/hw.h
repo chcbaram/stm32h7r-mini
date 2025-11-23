@@ -18,7 +18,10 @@ extern "C" {
 #include "rtc.h"
 #include "qbuffer.h"
 #include "qspi.h"
-
+#include "gpio.h"
+#include "spi.h"
+#include "spi_flash.h"
+#include "fault.h"
 
 bool hwInit(void);
 
