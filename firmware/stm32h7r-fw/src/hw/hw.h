@@ -22,6 +22,8 @@ extern "C" {
 #include "spi.h"
 #include "spi_flash.h"
 #include "fault.h"
+#include "button.h"
+
 
 bool hwInit(void);
 

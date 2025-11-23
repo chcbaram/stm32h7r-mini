@@ -52,6 +52,12 @@
 #define _USE_HW_SPI_FLASH
 #define      HW_SPI_FLASH_ADDR      0x91000000
 
+#define _USE_HW_SWTIMER
+#define      HW_SWTIMER_MAX_CH      8
+
+#define _USE_HW_BUTTON
+#define      HW_BUTTON_MAX_CH       BUTTON_PIN_MAX
+
 
 //-- CLI
 //
@@ -63,6 +69,8 @@
 #define _USE_CLI_HW_QSPI            1
 #define _USE_CLI_HW_GPIO            1
 #define _USE_CLI_HW_SPI_FLASH       1
+#define _USE_CLI_HW_BUTTON          1
+
 
 typedef enum
 {
@@ -80,5 +88,11 @@ typedef enum
   SPI_CH_FLASH,
   SPI_PIN_MAX,
 } SpiPinName_t;
+
+typedef enum
+{
+  BTN_CH1,
+  BUTTON_PIN_MAX,
+} ButtonPinName_t;
 
 #endif

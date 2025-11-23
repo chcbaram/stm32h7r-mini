@@ -10,37 +10,26 @@ extern "C" {
 
 #ifdef _USE_HW_SWTIMER
 
-#ifndef ON
-#define ON 1
-#endif
-
-#ifndef OFF
-#define OFF 0
-#endif
-
-#ifndef NULL
-#define NULL 0
-#endif
-
-
-
 #define _HW_DEF_SW_TIMER_MAX        HW_SWTIMER_MAX_CH
 
 
-#define ONE_TIME            1
-#define LOOP_TIME           2
+typedef enum
+{
+  ONE_TIME,
+  LOOP_TIME,
+} SwtimerMode_t;
 
 
 
-typedef int16_t             swtimer_handle_t;
+typedef int16_t  swtimer_handle_t;
 
 
 
 bool swtimerInit(void);
-void swtimerSet  (swtimer_handle_t TmrNum, uint32_t TmrData, uint8_t TmrMode, void (*Fnct)(void *),void *arg);
-void swtimerStart(swtimer_handle_t TmrNum);
-void swtimerStop (swtimer_handle_t TmrNum);
-void swtimerReset(swtimer_handle_t TmrNum);
+void swtimerSet  (swtimer_handle_t handle, uint32_t period_ms, SwtimerMode_t mode, void (*Fnct)(void *), void *arg);
+void swtimerStart(swtimer_handle_t handle);
+void swtimerStop (swtimer_handle_t handle);
+void swtimerReset(swtimer_handle_t handle);
 void swtimerISR(void);
 
 

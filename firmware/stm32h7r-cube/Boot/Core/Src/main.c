@@ -21,6 +21,7 @@
 #include "gpdma.h"
 #include "rtc.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "xspi.h"
 #include "gpio.h"
@@ -100,6 +101,7 @@ int main(void)
   MX_RTC_Init();
   MX_XSPI1_Init();
   MX_SPI1_Init();
+  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
