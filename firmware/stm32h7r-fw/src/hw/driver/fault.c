@@ -83,6 +83,11 @@ bool faultReset(const char *p_msg, uint32_t *p_stack)
   }
 
 
+  if (CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk)  
+  { 
+    __BKPT(0);
+  } 
+  
   NVIC_SystemReset();
 
   return true;
