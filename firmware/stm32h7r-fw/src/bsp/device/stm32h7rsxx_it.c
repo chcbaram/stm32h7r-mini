@@ -44,7 +44,9 @@ void NMI_Handler(void)
   */
 void HardFault_Handler_C(uint32_t *p_stack)
 {
+  #ifdef _USE_HW_FAULT
   faultReset("HardFault", p_stack);
+  #endif
   while (1)
   {
   }
@@ -55,7 +57,9 @@ void HardFault_Handler_C(uint32_t *p_stack)
   */
 void MemManage_Handler_C(uint32_t *p_stack)
 {
+  #ifdef _USE_HW_FAULT
   faultReset("MemManage", p_stack);
+  #endif
   while (1)
   {
   }
@@ -66,7 +70,9 @@ void MemManage_Handler_C(uint32_t *p_stack)
   */
 void BusFault_Handler_C(uint32_t *p_stack)
 {
+  #ifdef _USE_HW_FAULT
   faultReset("BusFault", p_stack);
+  #endif
   while (1)
   {
   }
@@ -77,7 +83,9 @@ void BusFault_Handler_C(uint32_t *p_stack)
   */
 void UsageFault_Handler_C(uint32_t *p_stack)
 {
+  #ifdef _USE_HW_FAULT
   faultReset("UsageFault", p_stack);
+  #endif
   while (1)
   {
   }

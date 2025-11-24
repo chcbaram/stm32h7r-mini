@@ -41,13 +41,15 @@ bool hwInit(void)
   
   rtcInit();
   resetInit();
+  #ifdef _USE_HW_FAULT
   faultInit();
+  #endif
   swtimerInit();  
   gpioInit();
   buttonInit();
-  // spiInit();
-  // spiFlashInit();
-  // qspiInit();
+  spiInit();
+  spiFlashInit();
+  qspiInit();
   sdInit();
 
 

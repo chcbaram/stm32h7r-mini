@@ -10,8 +10,8 @@
 #define _DEF_BOARD_NAME           "STM32H7R-FW"
 
 
-#define _USE_HW_ASSERT
-#define _USE_HW_FAULT
+// #define _USE_HW_ASSERT
+// #define _USE_HW_FAULT
 #define _USE_HW_SD
 
 
