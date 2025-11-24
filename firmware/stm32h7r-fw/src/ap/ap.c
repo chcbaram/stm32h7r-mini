@@ -2,23 +2,14 @@
 
 
 
-void ledISR(void *arg)
-{
-  ledToggle(_DEF_LED1);
-}
+void updateSD(void);
+
+
 
 void apInit(void)
 {
   cliOpen(HW_UART_CH_CLI, 115200);  
   cliBegin();    
-
-  swtimer_handle_t timer_ch;
-  timer_ch = swtimerGetHandle();
-  if (timer_ch >= 0)
-  {
-    swtimerSet(timer_ch, 500, LOOP_TIME, ledISR, NULL);
-    swtimerStart(timer_ch);  
-  }  
 }
 
 void apMain(void)
@@ -35,5 +26,22 @@ void apMain(void)
     }
 
     cliMain();
+    updateSD();
+  }
+}
+
+void updateSD(void)
+{
+  sd_state_t sd_state;
+
+
+  sd_state = sdUpdate();
+  if (sd_state == SDCARD_CONNECTED)
+  {
+    logPrintf("\n[  ] SDCARD_CONNECTED\n");
+  }
+  if (sd_state == SDCARD_DISCONNECTED)
+  {
+    logPrintf("\n[  ] SDCARD_DISCONNECTED\n");
   }
 }

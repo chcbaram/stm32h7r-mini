@@ -19,8 +19,8 @@ __attribute__((section(".non_cache")))
 bool hwInit(void)
 {  
   cliInit();
-  // logInit();
-  // ledInit();
+  logInit();
+  ledInit();
   uartInit();
   for (int i=0; i<HW_UART_MAX_CH; i++)
   {
@@ -45,10 +45,10 @@ bool hwInit(void)
   swtimerInit();  
   gpioInit();
   buttonInit();
-  spiInit();
-  spiFlashInit();
-  qspiInit();
-
+  // spiInit();
+  // spiFlashInit();
+  // qspiInit();
+  sdInit();
 
 
 

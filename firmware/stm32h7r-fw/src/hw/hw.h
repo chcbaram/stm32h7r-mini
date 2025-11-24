@@ -23,7 +23,7 @@ extern "C" {
 #include "spi_flash.h"
 #include "fault.h"
 #include "button.h"
-
+#include "sd.h"
 
 bool hwInit(void);
 

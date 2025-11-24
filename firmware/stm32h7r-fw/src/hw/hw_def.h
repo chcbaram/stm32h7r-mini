@@ -12,6 +12,7 @@
 
 #define _USE_HW_ASSERT
 #define _USE_HW_FAULT
+#define _USE_HW_SD
 
 
 #define _USE_HW_LED
@@ -70,7 +71,7 @@
 #define _USE_CLI_HW_GPIO            1
 #define _USE_CLI_HW_SPI_FLASH       1
 #define _USE_CLI_HW_BUTTON          1
-
+#define _USE_CLI_HW_SD              1
 
 typedef enum
 {
@@ -80,6 +81,7 @@ typedef enum
 typedef enum
 {
   FLASH_SPI_CS,
+  SD_DETECT,
   GPIO_PIN_MAX
 } GpioPinName_t;
 

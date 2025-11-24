@@ -129,6 +129,7 @@ void buttonISR(void *arg)
         if (millis()-p_btn->pre_time >= 20)
         {
           p_btn->pressed = true;
+          p_btn->pressed_cnt++;
           p_btn->state = BTN_PRESSED;
         }
         else
@@ -227,16 +228,16 @@ const char *buttonGetName(uint8_t ch)
 
 uint32_t buttonGetClicked(uint8_t ch, bool reset)
 {
-  volatile uint32_t ret = 0;
+  uint32_t ret = 0;
 
   if (ch >= BUTTON_MAX_CH || is_enable == false) 
     return 0;
 
-  ret = button_tbl[ch].pressed;
+  ret = button_tbl[ch].pressed_cnt > 0 ? true:false;
 
   if (reset)
   {
-    button_tbl[ch].pressed = false;
+    button_tbl[ch].pressed_cnt = 0;
   }
   return ret;
 }

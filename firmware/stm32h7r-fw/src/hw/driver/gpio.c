@@ -23,6 +23,7 @@ typedef struct
 const gpio_tbl_t gpio_tbl[GPIO_MAX_CH] =
 {
   {GPIOA, GPIO_PIN_4, _DEF_OUTPUT, GPIO_PIN_SET, GPIO_PIN_RESET, _DEF_HIGH, NAME_DEF(FLASH_SPI_CS)},
+  {GPIOP, GPIO_PIN_6, _DEF_INPUT,  GPIO_PIN_SET, GPIO_PIN_RESET, _DEF_HIGH, NAME_DEF(SD_DETECT)   },
 };
 
 
@@ -37,6 +38,7 @@ bool gpioInit(void)
   bool ret = true;
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOP_CLK_ENABLE();
 
 
   for (int i=0; i<GPIO_MAX_CH; i++)
@@ -102,7 +104,7 @@ bool gpioPinMode(uint8_t ch, uint8_t mode)
   return ret;
 }
 
-void gpioPinWrite(uint8_t ch, bool value)
+void gpioPinWrite(uint8_t ch, uint8_t value)
 {
   if (ch >= GPIO_MAX_CH)
   {
@@ -119,9 +121,9 @@ void gpioPinWrite(uint8_t ch, bool value)
   }
 }
 
-bool gpioPinRead(uint8_t ch)
+uint8_t gpioPinRead(uint8_t ch)
 {
-  bool ret = false;
+  uint8_t ret = _DEF_LOW;
 
   if (ch >= GPIO_MAX_CH)
   {
@@ -130,7 +132,7 @@ bool gpioPinRead(uint8_t ch)
 
   if (HAL_GPIO_ReadPin(gpio_tbl[ch].port, gpio_tbl[ch].pin) == gpio_tbl[ch].on_state)
   {
-    ret = true;
+    ret = _DEF_HIGH;
   }
 
   return ret;
