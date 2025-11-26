@@ -5,6 +5,10 @@
 #include "qbuffer.h"
 #include "cli.h"
 
+#ifdef _USE_HW_CDC
+#include "cdc.h"
+#endif
+
 
 #define NAME_DEF(x)               x, #x
 #define UART_RX_BUF_LENGTH        1024
@@ -61,9 +65,9 @@ static DMA_HandleTypeDef handle_GPDMA1_Channel0;
 
 const static uart_hw_t uart_hw_tbl[UART_MAX_CH] =
 {
-  {UART_TYPE_HW, USART1, &huart1, NAME_DEF(UART_PIN_USART1)},
+  {UART_TYPE_HW,  USART1, &huart1, NAME_DEF(UART_PIN_USART1)},
+  {UART_TYPE_CDC, NULL,   NULL,    NAME_DEF(UART_PIN_CDC)   },
 };
-
 
 
 
@@ -153,6 +157,12 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       }
       break;
 
+    case UART_TYPE_CDC:
+      uart_tbl[ch].baud    = baud;
+      uart_tbl[ch].is_open = true;
+      ret = true;      
+      break;
+
     default:
       break;
   }
@@ -179,6 +189,10 @@ uint32_t uartAvailable(uint8_t ch)
     case UART_TYPE_HW:
       uart_tbl[ch].qbuffer.in = (uart_tbl[ch].qbuffer.len - uart_tbl[ch].p_huart->hdmarx->Instance->CBR1);
       ret = qbufferAvailable(&uart_tbl[ch].qbuffer);      
+      break;
+
+    case UART_TYPE_CDC:
+      ret = cdcAvailable();      
       break;
 
     default:
@@ -217,6 +231,10 @@ uint8_t uartRead(uint8_t ch)
       qbufferRead(&uart_tbl[ch].qbuffer, &ret, 1);
       break;
 
+    case UART_TYPE_CDC:
+      ret = cdcRead();      
+      break;
+
     default:
       break;      
   }
@@ -237,6 +255,10 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data, uint32_t length)
       {
         ret = length;
       }
+      break;
+
+    case UART_TYPE_CDC:
+      ret = cdcWrite(p_data, length);      
       break;
 
     default:
@@ -435,6 +457,8 @@ void cliUart(cli_args_t *args)
 
       while(1)
       {
+        cliLoopIdle();
+
         if (uartAvailable(uart_ch) > 0)
         {
           rx_data = uartRead(uart_ch);

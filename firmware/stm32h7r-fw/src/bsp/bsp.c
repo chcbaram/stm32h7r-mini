@@ -1,4 +1,5 @@
 #include "bsp.h"
+#include "cli.h"
 #include "hw_def.h"
 
 
@@ -36,19 +37,34 @@ bool bspInit(void)
   return ret;
 }
 
-void delay(uint32_t ms)
+void delay(uint32_t delay_ms)
 {
 #ifdef _USE_HW_RTOS
   if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
   {
-    osDelay(ms);
+    osDelay(delay_ms);
   }
   else
   {
-    HAL_Delay(ms);
+    HAL_Delay(delay_ms);
   }
 #else
-  HAL_Delay(ms);
+  // HAL_Delay(ms);
+  uint32_t tickstart = HAL_GetTick();
+  uint32_t wait = delay_ms;
+
+  /* Add a period to ensure minimum wait */
+  if (wait < HAL_MAX_DELAY)
+  {
+    wait += (uint32_t)uwTickFreq;
+  }
+
+  while ((HAL_GetTick() - tickstart) < wait)
+  {
+    #ifdef _USE_HW_CLI
+    cliLoopIdle();
+    #endif 
+  }  
 #endif
 }
 

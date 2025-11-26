@@ -24,6 +24,7 @@
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
+#include "usb_otg.h"
 #include "xspi.h"
 #include "gpio.h"
 
@@ -104,6 +105,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM17_Init();
   MX_SDMMC2_SD_Init();
+  MX_USB_OTG_HS_PCD_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

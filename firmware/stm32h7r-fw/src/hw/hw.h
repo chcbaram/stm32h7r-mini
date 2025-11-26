@@ -24,6 +24,9 @@ extern "C" {
 #include "fault.h"
 #include "button.h"
 #include "sd.h"
+#include "usb.h"
+#include "cdc.h"
+
 
 bool hwInit(void);
 

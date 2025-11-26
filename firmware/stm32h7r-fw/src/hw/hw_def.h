@@ -10,8 +10,8 @@
 #define _DEF_BOARD_NAME           "STM32H7R-FW"
 
 
-// #define _USE_HW_ASSERT
-// #define _USE_HW_FAULT
+#define _USE_HW_ASSERT
+#define _USE_HW_FAULT
 #define _USE_HW_SD
 
 
@@ -19,7 +19,7 @@
 #define      HW_LED_MAX_CH          1
 
 #define _USE_HW_UART
-#define      HW_UART_MAX_CH         1
+#define      HW_UART_MAX_CH         UART_PIN_MAX
 #define      HW_UART_CH_SWD         _DEF_UART1
 #define      HW_UART_CH_CLI         HW_UART_CH_SWD
 
@@ -59,6 +59,11 @@
 #define _USE_HW_BUTTON
 #define      HW_BUTTON_MAX_CH       BUTTON_PIN_MAX
 
+#define _USE_HW_USB
+#define _USE_HW_CDC
+#define      HW_USE_CDC             1
+#define      HW_USE_MSC             0
+
 
 //-- CLI
 //
@@ -72,10 +77,14 @@
 #define _USE_CLI_HW_SPI_FLASH       1
 #define _USE_CLI_HW_BUTTON          1
 #define _USE_CLI_HW_SD              1
+#define _USE_CLI_HW_USB             1
+
 
 typedef enum
 {
   UART_PIN_USART1,
+  UART_PIN_CDC,
+  UART_PIN_MAX
 } UartPinName_t;
 
 typedef enum

@@ -26,6 +26,40 @@
         "svdFile": "C:/ST/STM32CubeCLT_1.18.0/STMicroelectronics_CMSIS_SVD/STM32H7R.svd"
       },       
       "runToEntryPoint": "main",  
-    }   
+    },
+    {
+      "cwd": "${workspaceRoot}",
+      "executable": "./build/stm32h7r-fw.elf",
+      "name": "Debug with STLINK at SRAM",
+      "request": "launch",
+      "type": "cortex-debug",
+      "showDevDebugOutput": "none",      
+      "servertype": "stlink",
+      "serverArgs": [
+        "-m","1",
+        "--extload", "${workspaceFolder}/tools/W25Q16JV_BARAM-45K-H7S.stldr"         
+      ],         
+      "runToEntryPoint": "main",  
+      "overrideRestartCommands": [
+        "load"
+      ],
+      "postStartSessionCommands": [
+        "monitor reset"
+      ],
+      "overrideLaunchCommands": [       
+        "load",
+      ],  
+      
+      "osx": {
+        "serverpath": "/opt/ST/STM32CubeCLT_1.16.0/STLink-gdb-server/bin/ST-LINK_gdbserver",
+        "stm32cubeprogrammer": "/opt/ST/STM32CubeCLT_1.16.0/STM32CubeProgrammer/bin",
+        "svdFile": "/opt/ST/STM32CubeCLT_1.16.0/STMicroelectronics_CMSIS_SVD/STM32H7R.svd"
+      },       
+      "windows": {
+        "serverpath": "C:/ST/STM32CubeCLT_1.18.0/STLink-gdb-server/bin/ST-LINK_gdbserver.exe",
+        "stm32cubeprogrammer": "C:/ST/STM32CubeCLT_1.18.0/STM32CubeProgrammer/bin",
+        "svdFile": "C:/ST/STM32CubeCLT_1.18.0/STMicroelectronics_CMSIS_SVD/STM32H7R.svd"
+      },       
+    },        
   ]
 }

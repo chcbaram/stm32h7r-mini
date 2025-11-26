@@ -5,11 +5,16 @@
 void updateSD(void);
 
 
+static bool is_init = false;
+
+
 
 void apInit(void)
 {
   cliOpen(HW_UART_CH_CLI, 115200);  
   cliBegin();    
+
+  is_init = true;
 }
 
 void apMain(void)
@@ -22,11 +27,20 @@ void apMain(void)
     if (millis()-pre_time >= 500)
     {
       pre_time = millis();
-      // ledToggle(_DEF_LED1);
+      ledToggle(_DEF_LED1);
     }
 
     cliMain();
     updateSD();
+    usbUpdate();
+  }
+}
+
+void cliLoopIdle(void)
+{
+  if (is_init)
+  {
+    usbUpdate();
   }
 }
 

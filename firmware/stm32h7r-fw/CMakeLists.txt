@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/tools")
 include(arm-none-eabi-gcc)
+include("src/lib/tinyusb/src/CMakeLists.txt")
 
 
 # 프로젝트 이름은 최종 출력 파일 이름으로 사용된다.
@@ -29,6 +30,10 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
   src/bsp/rtos/*.c  
   src/bsp/device/*.c
 
+  # TinyUSB
+  src/lib/tinyusb/src/portable/synopsys/dwc2/dcd_dwc2.c
+  src/lib/tinyusb/src/portable/synopsys/dwc2/hcd_dwc2.c
+  src/lib/tinyusb/src/portable/synopsys/dwc2/dwc2_common.c
 )
 
 # 하위폴더에 있는 파일까지 포함한다.
@@ -62,7 +67,7 @@ add_executable(${EXECUTABLE}
   ${SRC_FILES_RECURSE}
 )
 
-
+tinyusb_target_add(${EXECUTABLE})
 
 target_include_directories(${EXECUTABLE} PRIVATE 
   src  
@@ -82,6 +87,10 @@ target_include_directories(${EXECUTABLE} PRIVATE
   src/lib/ST/CMSIS/Include
   src/lib/ST/CMSIS/Device/ST/STM32H7RSxx/Include
   src/lib/ST/STM32H7RSxx_HAL_Driver/Inc
+
+  # USB
+  src/hw/driver/usb
+  src/hw/driver/usb/usb_cdc  
 )
 
 target_compile_definitions(${EXECUTABLE} PRIVATE
@@ -106,11 +115,12 @@ target_compile_options(${EXECUTABLE} PRIVATE
 
   -Wall
   -g3
-  -Os
+  -Og
   )
 
 target_link_options(${EXECUTABLE} PRIVATE
-  -T../src/bsp/ldscript/STM32H7S3V8TX_FLASH.ld
+  # -T${CMAKE_CURRENT_SOURCE_DIR}/src/bsp/ldscript/STM32H7S3V8TX_FLASH.ld
+  -T${CMAKE_CURRENT_SOURCE_DIR}/src/bsp/ldscript/STM32H7S3V8TX_SRAM.ld
 
   -mcpu=cortex-m7
   -mthumb

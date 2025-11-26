@@ -721,6 +721,8 @@ bool cliKeepLoop(void)
 {
   cli_t *p_cli = &cli_node;
 
+  
+  cliLoopIdle();
 
   if (uartAvailable(p_cli->ch) == 0)
   {
@@ -730,6 +732,11 @@ bool cliKeepLoop(void)
   {
     return false;
   }
+}
+
+__WEAK void cliLoopIdle(void)
+{
+
 }
 
 bool cliAdd(const char *cmd_str, void (*p_func)(cli_args_t *))

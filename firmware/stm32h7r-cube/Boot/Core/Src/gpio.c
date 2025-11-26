@@ -45,6 +45,7 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOP_CLK_ENABLE();
   __HAL_RCC_GPIOO_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOM_CLK_ENABLE();
 
   /*Configure GPIO pin : PO2 */
   GPIO_InitStruct.Pin = GPIO_PIN_2;

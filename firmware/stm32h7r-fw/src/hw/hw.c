@@ -49,8 +49,7 @@ bool hwInit(void)
   spiFlashInit();
   qspiInit();
   sdInit();
-
-
-
+  usbInit();  
+  
   return true;
 }
