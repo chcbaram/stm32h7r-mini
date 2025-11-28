@@ -36,6 +36,7 @@ bool usbInit(void)
 
 
   HAL_PWREx_EnableUSBVoltageDetector();
+  HAL_PWREx_EnableUSBHSregulator();
 
   /* USB_OTG_HS clock enable */
   __HAL_RCC_USB_OTG_HS_CLK_ENABLE();
