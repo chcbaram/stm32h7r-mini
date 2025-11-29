@@ -14,12 +14,6 @@ bool bspInit(void)
 {
   bool ret = true;
 
-
-  #ifdef _USE_HW_CACHE
-  SCB_EnableICache();
-  SCB_EnableDCache();
-  #endif  
-
   HAL_Init();
 
 
@@ -263,7 +257,7 @@ void mpuInit(void)
   MPU_InitStruct.Number           = MPU_REGION_NUMBER4;
   MPU_InitStruct.Enable           = MPU_REGION_ENABLE;
   MPU_InitStruct.BaseAddress      = 0x90000000;
-  MPU_InitStruct.Size             = MPU_REGION_SIZE_2MB;
+  MPU_InitStruct.Size             = MPU_REGION_SIZE_16MB;
   MPU_InitStruct.TypeExtField     = MPU_TEX_LEVEL1;
   MPU_InitStruct.IsCacheable      = MPU_ACCESS_CACHEABLE;
   MPU_InitStruct.IsBufferable     = MPU_ACCESS_BUFFERABLE;
@@ -272,6 +266,7 @@ void mpuInit(void)
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
   MPU_InitStruct.DisableExec      = MPU_INSTRUCTION_ACCESS_ENABLE;
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
 
   /* Write-back, write and read allocate */
   MPU_InitStruct.Number           = MPU_REGION_NUMBER5;

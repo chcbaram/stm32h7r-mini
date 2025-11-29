@@ -16,6 +16,11 @@ volatile const firm_ver_t firm_ver __attribute__((section(".version"))) =
 
 bool hwInit(void)
 {  
+  #ifdef _USE_HW_CACHE
+  SCB_EnableICache();
+  SCB_EnableDCache();
+  #endif  
+
   cliInit();
   logInit();
   ledInit();
@@ -47,9 +52,16 @@ bool hwInit(void)
   buttonInit();
   spiInit();
   spiFlashInit();
+  #ifndef _USE_HW_QSPI_BOOT  
   qspiInit();
+  #endif
+  flashInit();
   sdInit();
   usbInit();  
   
+  logPrintf("\n");
+  logPrintf("[  ] ICache  %s\n", (SCB->CCR & SCB_CCR_IC_Msk) ? "ON":"OFF");
+  logPrintf("[  ] DCache  %s\n", (SCB->CCR & SCB_CCR_DC_Msk) ? "ON":"OFF");
+    
   return true;
 }

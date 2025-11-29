@@ -14,6 +14,7 @@
       "servertype": "stlink",
       "serverArgs": [
         "-m","1",       
+        "--extload", "${workspaceFolder}/tools/W25Q128JV_STM32H7R-MINI.stldr"      
       ],      
       "osx": {
         "serverpath": "/opt/ST/STM32CubeCLT_1.16.0/STLink-gdb-server/bin/ST-LINK_gdbserver",
@@ -37,7 +38,7 @@
       "servertype": "stlink",
       "serverArgs": [
         "-m","1",
-        "--extload", "${workspaceFolder}/tools/W25Q16JV_BARAM-45K-H7S.stldr"         
+        "--extload", "${workspaceFolder}/tools/W25Q128JV_STM32H7R-MINI.stldr"         
       ],         
       "runToEntryPoint": "main",  
       "overrideRestartCommands": [

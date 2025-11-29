@@ -10,9 +10,12 @@
 #define _DEF_BOARD_NAME           "STM32H7R-FW"
 
 
+#define _USE_HW_CACHE
 #define _USE_HW_ASSERT
 #define _USE_HW_FAULT
 #define _USE_HW_SD
+#define _USE_HW_FLASH
+#define _USE_HW_QSPI_BOOT
 
 
 #define _USE_HW_LED
@@ -41,8 +44,10 @@
 #define _USE_HW_RESET
 #define      HW_RESET_BOOT          1
 
+#ifndef _USE_HW_QSPI_BOOT
 #define _USE_HW_QSPI
 #define      HW_QSPI_BASE_ADDR      0x90000000
+#endif
 
 #define _USE_HW_GPIO
 #define      HW_GPIO_MAX_CH         GPIO_PIN_MAX
@@ -78,7 +83,7 @@
 #define _USE_CLI_HW_BUTTON          1
 #define _USE_CLI_HW_SD              1
 #define _USE_CLI_HW_USB             1
-
+#define _USE_CLI_HW_FLASH           1
 
 typedef enum
 {

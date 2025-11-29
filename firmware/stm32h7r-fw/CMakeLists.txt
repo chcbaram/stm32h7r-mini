@@ -120,7 +120,8 @@ target_compile_options(${EXECUTABLE} PRIVATE
 
 target_link_options(${EXECUTABLE} PRIVATE
   # -T${CMAKE_CURRENT_SOURCE_DIR}/src/bsp/ldscript/STM32H7S3V8TX_FLASH.ld
-  -T${CMAKE_CURRENT_SOURCE_DIR}/src/bsp/ldscript/STM32H7S3V8TX_SRAM.ld
+  # -T${CMAKE_CURRENT_SOURCE_DIR}/src/bsp/ldscript/STM32H7S3V8TX_SRAM.ld
+  -T${CMAKE_CURRENT_SOURCE_DIR}/src/bsp/ldscript/STM32H7S3V8TX_QSPI.ld
 
   -mcpu=cortex-m7
   -mthumb
