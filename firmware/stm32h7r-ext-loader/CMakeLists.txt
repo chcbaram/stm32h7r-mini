@@ -125,7 +125,7 @@ target_link_options(${EXECUTABLE} PRIVATE
   # -lnosys
 
   -nostartfiles
-  # -nostdlib
+  -nostdlib
     
   -Wl,-Map=${PRJ_NAME}.map,--cref
   -Wl,--gc-sections
