@@ -27,6 +27,7 @@ extern "C" {
 #include "usb.h"
 #include "cdc.h"
 #include "flash.h"
+#include "event.h"
 
 
 bool hwInit(void);

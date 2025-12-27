@@ -64,6 +64,10 @@
 #define _USE_HW_BUTTON
 #define      HW_BUTTON_MAX_CH       BUTTON_PIN_MAX
 
+#define _USE_HW_EVENT
+#define      HW_EVENT_Q_MAX         8
+#define      HW_EVENT_NODE_MAX      64
+
 #define _USE_HW_USB
 #define _USE_HW_CDC
 #define      HW_USE_CDC             1

@@ -11,8 +11,8 @@ static bool is_init = false;
 
 void apInit(void)
 {
-  cliOpen(HW_UART_CH_CLI, 115200);  
-  cliBegin();    
+
+  moduleInit();
 
   is_init = true;
 }
@@ -29,10 +29,9 @@ void apMain(void)
       pre_time = millis();
       ledToggle(_DEF_LED1);
     }
-
-    cliMain();
-    updateSD();
     usbUpdate();
+
+    moduleUpdate();
   }
 }
 
@@ -44,18 +43,3 @@ void cliLoopIdle(void)
   }
 }
 
-void updateSD(void)
-{
-  sd_state_t sd_state;
-
-
-  sd_state = sdUpdate();
-  if (sd_state == SDCARD_CONNECTED)
-  {
-    logPrintf("\n[  ] SDCARD_CONNECTED\n");
-  }
-  if (sd_state == SDCARD_DISCONNECTED)
-  {
-    logPrintf("\n[  ] SDCARD_DISCONNECTED\n");
-  }
-}

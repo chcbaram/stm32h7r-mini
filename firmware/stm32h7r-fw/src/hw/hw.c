@@ -48,6 +48,7 @@ bool hwInit(void)
   faultInit();
   #endif
   swtimerInit();  
+  eventInit();
   gpioInit();
   buttonInit();
   spiInit();
