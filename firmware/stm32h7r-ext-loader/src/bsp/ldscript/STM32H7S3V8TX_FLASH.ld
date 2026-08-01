@@ -41,7 +41,11 @@ PHDRS {Loader PT_LOAD; SgInfo PT_LOAD ; }
 /* Specify the memory areas */
 MEMORY
 {
-  RAM (xrw)        : ORIGIN = 0x24000004,   LENGTH = 319K  
+  /* bspInit 의 MPU 리전 2 가 0x24000000 부터 16KB 를 non-cache + 실행금지(XN)로
+     잡는다. 앱에서는 그 자리가 .non_cache 버퍼라 문제가 없지만, 로더 코드를
+     거기에 두면 HAL_MPU_Enable 직후 자기 자신을 인출하다 IACCVIOL 로 하드폴트가
+     난다 (CFSR=0x1, HFSR=FORCED). 그래서 앱과 같이 16KB 위에서 시작한다. */
+  RAM (xrw)        : ORIGIN = 0x24004000,   LENGTH = 300K
 }
 
 /* Define output sections */
